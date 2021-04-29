@@ -1,0 +1,53 @@
+package $package$.$module1_format$;
+
+import com.microsoft.azure.servicebus.SubscriptionClient;
+import com.microsoft.azure.servicebus.TopicClient;
+import com.microsoft.azure.servicebus.primitives.ConnectionStringBuilder;
+import edu.umd.cs.findbugs.annotations.SuppressFBWarnings;
+import io.opentracing.Tracer;
+import lombok.extern.slf4j.Slf4j;
+import org.mockito.Mockito;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import org.springframework.context.annotation.Primary;
+import org.springframework.context.annotation.Scope;
+import org.springframework.web.context.WebApplicationContext;
+
+import java.util.concurrent.CompletableFuture;
+
+import static org.springframework.beans.factory.config.ConfigurableBeanFactory.SCOPE_PROTOTYPE;
+import static org.springframework.context.annotation.ScopedProxyMode.DEFAULT;
+
+@Slf4j
+@Primary
+@Configuration
+public class AzurePublisherFactoryConfigTest extends pe.talma.commons.pubsub.impl.config.AzurePublisherFactoryConfig {
+
+
+  public AzurePublisherFactoryConfigTest(WebApplicationContext webApplicationContext, Tracer tracer) {
+    super(webApplicationContext, tracer);
+  }
+
+  @Override
+  @SuppressFBWarnings("CRLF_INJECTION_LOGS")
+  @Bean
+  @Scope(value = SCOPE_PROTOTYPE, proxyMode = DEFAULT)
+  public TopicClient topicClient(String servicebusConnection, String topic) {
+    log.info("topicClient (servicebusConnection:{}, topic:{})", servicebusConnection, topic);
+    ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(servicebusConnection, topic);
+    TopicClient topicClient = Mockito.mock(TopicClient.class);
+    Mockito.when(topicClient.sendAsync(Mockito.any())).thenReturn(CompletableFuture.completedFuture(null));
+    return topicClient;
+  }
+
+  @Override
+  @SuppressFBWarnings("CRLF_INJECTION_LOGS")
+  @Bean
+  @Scope(value = SCOPE_PROTOTYPE, proxyMode = DEFAULT)
+  public SubscriptionClient subscriptionClient(String subscriptionConnection, String subscription) {
+    log.info("subscriptionClient (subscriptionConnection:{}, subscription:{})", subscriptionConnection, subscription);
+    ConnectionStringBuilder connectionStringBuilder = new ConnectionStringBuilder(subscriptionConnection, subscription);
+    return Mockito.mock(SubscriptionClient.class);
+  }
+
+}

@@ -1,0 +1,34 @@
+package $package$.$module1_format$.pubsub;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.Configuration;
+import pe.talma.commons.pubsub.PublisherClient;
+import pe.talma.commons.pubsub.PublisherFactory;
+
+
+@Slf4j
+@Configuration
+public class DefaultPublisherClientConfig {
+
+  private final PublisherFactory publisherFactory;
+
+  public DefaultPublisherClientConfig(PublisherFactory publisherFactory) {
+    this.publisherFactory = publisherFactory;
+  }
+
+  @Bean
+  public PublisherClient demoPublisherClient1(@Value("\${$app$.$module1_format$.pubsub.azure.connection}") String servicebusConnection,
+                                              @Value("\${$app$.$module1_format$.pubsub.azure.topic}") String topic) {
+    log.info("DefaultPublisherClientConfig executing: {}", topic);
+    return publisherFactory.publisherClient(servicebusConnection, topic);
+  }
+
+  @Bean
+  public PublisherClient demoPublisherClient2(@Value("\${$app$.$module1_format$.pubsub.azure.connection}") String servicebusConnection,
+                                              @Value("\${$app$.$module1_format$.pubsub.azure.topic}") String topic) {
+    log.info("DefaultPublisherClientConfig executing: {}", topic);
+    return publisherFactory.publisherClient(servicebusConnection, topic);
+  }
+}

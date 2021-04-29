@@ -1,0 +1,40 @@
+package $package$.$module1_format$.pubsub;
+
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.stereotype.Component;
+import pe.talma.commons.pubsub.SubscriberHandler;
+import pe.talma.commons.pubsub.subscriber.util.SubscriberMessageActions;
+
+import $package$.$module1_format$.facade.$module1;format="Camel"$Facade;
+
+import java.nio.charset.StandardCharsets;
+import java.util.Map;
+
+@Slf4j
+@Component
+public class DefaultSubscriberHandler implements SubscriberHandler {
+
+  private static final String AUDIT_SUBSCRIBER_PREFIX = "$app$.$module1_format$";
+
+  private final $module1;format="Camel"$Facade $module1;format="camel"$Facade;
+
+  public DefaultSubscriberHandler($module1;format="Camel"$Facade $module1;format="camel"$Facade) {
+    this.$module1;format="camel"$Facade = $module1;format="camel"$Facade;
+  }
+
+  @Override
+  public String getPropertyBase() {
+    return AUDIT_SUBSCRIBER_PREFIX;
+  }
+
+  @Override
+  public SubscriberMessageActions handler(Map<String, String> headers, byte[] message) {
+    log.info("DefaultSubscriberHandler executing");
+    log.debug("DefaultSubscriberHandler headers: {}", headers);
+    log.debug("DefaultSubscriberHandler message: {}", message);
+    String jsonMessage = new String(message, StandardCharsets.UTF_8);
+    $module1;format="camel"$Facade.save(jsonMessage);
+    log.debug("DefaultSubscriberHandler message.json: {}", jsonMessage.replaceAll("[\r\n]", ""));
+    return SubscriberMessageActions.COMPLETE;
+  }
+}

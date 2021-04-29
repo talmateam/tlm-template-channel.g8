@@ -1,0 +1,10 @@
+package $package$.$module1_format$.repository;
+
+
+import org.springframework.data.jpa.repository.JpaRepository;
+import $package$.$module1_format$.domain.User;
+
+import java.util.UUID;
+
+public interface UserRepository extends JpaRepository<User, UUID> {
+}
